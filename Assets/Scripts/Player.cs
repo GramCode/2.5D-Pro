@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
 
     private Vector3 _velocity, _direction;
     private float _yVelocity;
+    private bool _jumping = false;
 
     private CharacterController _controller;
 
@@ -33,16 +34,37 @@ public class Player : MonoBehaviour
     {
         if (_controller.isGrounded)
         {
-            float horizontal = Input.GetAxis("Horizontal");
+            if (_jumping)
+            {
+                _jumping = false;
+                AnimationStateManager.Instance.SetJumpState(_jumping);
+            }
 
-            _direction = new Vector3(horizontal, 0, 0);
+            float horizontal = Input.GetAxisRaw("Horizontal");
 
+            _direction = new Vector3(0, 0, horizontal);
+            AnimationStateManager.Instance.SetSpeedState(horizontal);
             _velocity = _direction * _speed;
+            
+            Vector3 facingDirection = transform.localEulerAngles;
 
+            if (horizontal > 0)
+            {
+                facingDirection.y = 0;
+            }
+            else if (horizontal < 0)
+            {
+                facingDirection.y = 180;
+            }
+
+            transform.eulerAngles = facingDirection;
+            
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 _yVelocity = _jumpHeight;
+                _jumping = true;
+                AnimationStateManager.Instance.SetJumpState(_jumping);
             }
         }
         else
