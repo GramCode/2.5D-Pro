@@ -77,4 +77,10 @@ public class Player : MonoBehaviour
         _controller.Move(_velocity * Time.deltaTime);
 
     }
+
+    public void LedgeGrabbed()
+    {
+        _controller.enabled = false;
+        AnimationStateManager.Instance.SetLedgeAnimation(true);
+    }
 }

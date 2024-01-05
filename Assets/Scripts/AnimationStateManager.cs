@@ -47,5 +47,9 @@ public class AnimationStateManager : MonoBehaviour
         _anim.SetBool("Jumping", jump);
     }
 
+    public void SetLedgeAnimation(bool grabbed)
+    {
+        _anim.SetBool("LedgeGrab", grabbed);
+    }
 
 }
