@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LedgeGrab : MonoBehaviour
+public class Ledge : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
@@ -11,7 +11,8 @@ public class LedgeGrab : MonoBehaviour
             Player player = other.transform.parent.GetComponent<Player>();
 
             if (player != null)
-                player.LedgeGrabbed();
+                player.LedgeGrabbed(this);
+
         }
     }
 }

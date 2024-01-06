@@ -52,4 +52,8 @@ public class AnimationStateManager : MonoBehaviour
         _anim.SetBool("LedgeGrab", grabbed);
     }
 
+    public void SetClimbAnimation()
+    {
+        _anim.SetTrigger("Climb");
+    }
 }

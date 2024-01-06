@@ -311,6 +311,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5700745368218089263, guid: 2250171d4c98040099cdf37a637ac68e, type: 3}
+      propertyPath: _climbUpPos.y
+      value: 74.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700745368218089263, guid: 2250171d4c98040099cdf37a637ac68e, type: 3}
+      propertyPath: _climbUpPos.z
+      value: 123.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700745368218089263, guid: 2250171d4c98040099cdf37a637ac68e, type: 3}
+      propertyPath: _standUpPos.x
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700745368218089263, guid: 2250171d4c98040099cdf37a637ac68e, type: 3}
+      propertyPath: _standUpPos.y
+      value: 74.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700745368218089263, guid: 2250171d4c98040099cdf37a637ac68e, type: 3}
+      propertyPath: _standUpPos.z
+      value: 124.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700745368218089263, guid: 2250171d4c98040099cdf37a637ac68e, type: 3}
+      propertyPath: _ledgeGrabPos.x
+      value: 0.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700745368218089263, guid: 2250171d4c98040099cdf37a637ac68e, type: 3}
+      propertyPath: _ledgeGrabPos.y
+      value: 69.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700745368218089263, guid: 2250171d4c98040099cdf37a637ac68e, type: 3}
+      propertyPath: _ledgeGrabPos.z
+      value: 123.19
+      objectReference: {fileID: 0}
     - target: {fileID: 7717476624870646849, guid: 2250171d4c98040099cdf37a637ac68e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.060000107
@@ -428,7 +460,7 @@ Transform:
   m_GameObject: {fileID: 2011461672}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.06, z: -2.51}
+  m_LocalPosition: {x: 0, y: 0.65, z: -2.57}
   m_LocalScale: {x: 2.9875, y: 0.3875, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -514,7 +546,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2011461672}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 174107e18b2114871a756c606ef4b82b, type: 3}
+  m_Script: {fileID: 11500000, guid: a612a1ec38b49413ca5f91e084b74239, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2120877326

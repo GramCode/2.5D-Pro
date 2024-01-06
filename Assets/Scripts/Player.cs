@@ -10,10 +10,15 @@ public class Player : MonoBehaviour
     private float _gravity = 25f;
     [SerializeField]
     private float _jumpHeight = 12f;
+    [SerializeField]
+    private Vector3 _ledgeGrabPos, _standUpPos;
 
     private Vector3 _velocity, _direction;
     private float _yVelocity;
     private bool _jumping = false;
+    private bool _snapToLedge = false;
+    private bool _onLedge = false;
+    private Ledge _activeLedge;
 
     private CharacterController _controller;
 
@@ -27,7 +32,20 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        Move();   
+        Move();
+        SnapToLedge();
+
+        if (_onLedge)
+        {
+            float vertical = Input.GetAxis("Vertical");
+
+            if (vertical > 0)
+            {
+                AnimationStateManager.Instance.SetClimbAnimation();
+                _onLedge = false;
+            }
+
+        }
     }
 
     private void Move()
@@ -74,13 +92,43 @@ public class Player : MonoBehaviour
 
         _velocity.y = _yVelocity;
 
-        _controller.Move(_velocity * Time.deltaTime);
+        if (_controller.enabled)
+            _controller.Move(_velocity * Time.deltaTime);
 
     }
 
-    public void LedgeGrabbed()
+    public void LedgeGrabbed(Ledge currentLedge)
     {
         _controller.enabled = false;
         AnimationStateManager.Instance.SetLedgeAnimation(true);
+        AnimationStateManager.Instance.SetSpeedState(0);
+        AnimationStateManager.Instance.SetJumpState(false);
+        _snapToLedge = true;
+        _onLedge = true;
+        _activeLedge = currentLedge;
+    }
+
+    private void SnapToLedge()
+    {
+        if (_snapToLedge)
+        {
+            transform.position = Vector3.Lerp(transform.position, _ledgeGrabPos, 30 * Time.deltaTime);
+
+            if (Vector3.Distance(transform.position, _ledgeGrabPos) < 0.1f)
+            {
+                _snapToLedge = false;
+            }
+        }
+    }
+
+    public void ClimbUpComplete()
+    {
+        transform.position = _standUpPos;
+        AnimationStateManager.Instance.SetLedgeAnimation(false);
+    }
+
+    public void StandUpComplete()
+    {
+        _controller.enabled = true;
     }
 }
