@@ -10,10 +10,6 @@ public class Player : MonoBehaviour
     private float _gravity = 25f;
     [SerializeField]
     private float _jumpHeight = 12f;
-    //[SerializeField]
-    //private Vector3 _ledgeGrabPos, _standUpPos;
-    //[SerializeField]
-    //private Transform _ledgeGrab, _standUp;
 
     private Vector3 _velocity, _direction;
     private float _yVelocity;
@@ -54,6 +50,8 @@ public class Player : MonoBehaviour
     {
         if (_controller.isGrounded)
         {
+            _yVelocity = 0;
+
             if (_jumping)
             {
                 _jumping = false;
@@ -132,5 +130,10 @@ public class Player : MonoBehaviour
     public void StandUpComplete()
     {
         _controller.enabled = true;
+    }
+
+    public void ResetVelocity()
+    {
+        _yVelocity = 0;
     }
 }

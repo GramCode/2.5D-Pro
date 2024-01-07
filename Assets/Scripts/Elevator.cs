@@ -12,7 +12,7 @@ public class Elevator : MonoBehaviour
     private int _index = 1;
     private bool _wait = false;
 
-    private void Update()
+    private void FixedUpdate()
     {
         Operate();
     }
