@@ -19,8 +19,6 @@ public class ClimbUpBehavior : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log("On State Exit Called");
-
         Player player = animator.transform.parent.GetComponent<Player>();
 
         if (player != null)

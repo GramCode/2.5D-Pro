@@ -10,8 +10,10 @@ public class Player : MonoBehaviour
     private float _gravity = 25f;
     [SerializeField]
     private float _jumpHeight = 12f;
-    [SerializeField]
-    private Vector3 _ledgeGrabPos, _standUpPos;
+    //[SerializeField]
+    //private Vector3 _ledgeGrabPos, _standUpPos;
+    //[SerializeField]
+    //private Transform _ledgeGrab, _standUp;
 
     private Vector3 _velocity, _direction;
     private float _yVelocity;
@@ -112,9 +114,9 @@ public class Player : MonoBehaviour
     {
         if (_snapToLedge)
         {
-            transform.position = Vector3.Lerp(transform.position, _ledgeGrabPos, 30 * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, _activeLedge.LedgeGrabPosition(), 30 * Time.deltaTime);
 
-            if (Vector3.Distance(transform.position, _ledgeGrabPos) < 0.1f)
+            if (Vector3.Distance(transform.position, _activeLedge.LedgeGrabPosition()) < 0.1f)
             {
                 _snapToLedge = false;
             }
@@ -123,7 +125,7 @@ public class Player : MonoBehaviour
 
     public void ClimbUpComplete()
     {
-        transform.position = _standUpPos;
+        transform.position = _activeLedge.StandUpPosition();
         AnimationStateManager.Instance.SetLedgeAnimation(false);
     }
 
