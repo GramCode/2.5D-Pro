@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     private bool _snapToLedge = false;
     private bool _onLedge = false;
     private Ledge _activeLedge;
+    private int _coins;
 
     private CharacterController _controller;
 
@@ -135,5 +136,11 @@ public class Player : MonoBehaviour
     public void ResetVelocity()
     {
         _yVelocity = 0;
+    }
+
+    public void AddCoin()
+    {
+        _coins++;
+        UIManager.Instance.UpdateCoinsText(_coins);
     }
 }
