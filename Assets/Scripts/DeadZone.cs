@@ -18,6 +18,7 @@ public class DeadZone : MonoBehaviour
                 cc.enabled = false;
                 StartCoroutine(CharacterControllerRoutine(cc));
                 AnimationStateManager.Instance.SetSpeedState(0);
+                AnimationStateManager.Instance.SetJumpState(false);
             }
 
             other.transform.position = _respawnLocation.position;

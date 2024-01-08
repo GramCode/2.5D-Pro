@@ -5,7 +5,7 @@ using UnityEngine;
 public class Elevator : MonoBehaviour
 {
     [SerializeField]
-    private Transform[] Waypoints;
+    private Transform[] _waypoints;
     [SerializeField]
     private float _speed = 4f;
 
@@ -19,24 +19,23 @@ public class Elevator : MonoBehaviour
 
     private void Operate()
     {
-        float distance = Vector3.Distance(transform.position, Waypoints[_index].transform.position);
+        float distance = Vector3.Distance(transform.position, _waypoints[_index].transform.position);
         
         if (distance < 0.1f)
         {
             _index++;
 
-            if (_index > Waypoints.Length - 1)
+            if (_index > _waypoints.Length - 1)
                 _index = 0;
 
             StartCoroutine(SwitchFloorRoutine());
         }
-        Debug.Log("Current Index: " + _index);
+
         if (_wait == false)
         {
-            transform.position = Vector3.MoveTowards(transform.position, Waypoints[_index].transform.position, _speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _waypoints[_index].transform.position, _speed * Time.deltaTime);
         }
 
-        Debug.Log("Distance: " + distance);
     }
 
     IEnumerator SwitchFloorRoutine()
