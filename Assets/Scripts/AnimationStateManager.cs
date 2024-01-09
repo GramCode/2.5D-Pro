@@ -56,4 +56,24 @@ public class AnimationStateManager : MonoBehaviour
     {
         _anim.SetTrigger("Climb");
     }
+
+    public void SetClimbLadderAnimation(bool climbing)
+    {
+        _anim.SetBool("ClimbingLadder", climbing);
+    }
+
+    public void SetClimbDirectionAnimation(float vertical)
+    {
+        _anim.SetFloat("Vertical", vertical);
+    }
+
+    public void AnimationSpeed(float speed)
+    {
+        _anim.speed = speed;
+    }
+
+    public void SetLadderClimbFinishedAnimation(bool finished)
+    {
+        _anim.SetBool("LadderClimbFinished", finished);
+    }
 }
