@@ -76,4 +76,9 @@ public class AnimationStateManager : MonoBehaviour
     {
         _anim.SetBool("LadderClimbFinished", finished);
     }
+
+    public void SetRollAnimation()
+    {
+        _anim.SetTrigger("Roll");
+    }
 }

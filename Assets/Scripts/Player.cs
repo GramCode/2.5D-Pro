@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     private float _jumpHeight = 12f;
     [SerializeField]
     private float _climbLadderSpeed = 2f;
+    [SerializeField]
+    private float _rollDistance = 8f;
 
     private Vector3 _velocity, _direction;
     private float _yVelocity;
@@ -29,6 +31,10 @@ public class Player : MonoBehaviour
     private bool _climbingLadderFinished = false;
     private LadderClimbFinished _activeLadderTopTrigger;
     private bool _canUpdateAnimationSpeed = false;
+    private bool _isRolling = false;
+    private Vector3 _rollDirection;
+    private float _rollInput;
+    private Vector3 _rollVelocity;
 
     private CharacterController _controller;
 
@@ -54,7 +60,7 @@ public class Player : MonoBehaviour
 
         if (_climbingLadder == false)
         {
-            if (_canMove == true)
+            if (_canMove == true && _isRolling == false)
                 Move();
         }
         else
@@ -63,6 +69,22 @@ public class Player : MonoBehaviour
                 return;
 
             ClimbingLadder();
+        }
+
+        if (_isRolling)
+        {
+            _rollInput = Input.GetAxisRaw("Horizontal");
+            _rollVelocity = _rollDirection * _rollDistance;
+
+            if (_controller.isGrounded == false)
+            {
+                _yVelocity -= _gravity * Time.deltaTime;
+                _rollVelocity.y = _yVelocity;
+            }
+            _controller.Move(_rollVelocity * Time.deltaTime);
+            AnimationStateManager.Instance.SetSpeedState(_rollInput);
+
+            
         }
 
         SnapToLedge();
@@ -121,7 +143,15 @@ public class Player : MonoBehaviour
             }
 
             transform.eulerAngles = facingDirection;
-            
+
+            if (horizontal > 0 || horizontal < 0 && _isRolling == false)
+            {
+                if (Input.GetKeyDown(KeyCode.LeftShift))
+                {
+                    _yVelocity = 0;
+                    Roll(horizontal);
+                }
+            }
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -132,6 +162,8 @@ public class Player : MonoBehaviour
         }
         else
         {
+            //Debug.Log("Moving Y Velocity: " + _yVelocity);
+
             _yVelocity -= _gravity * Time.deltaTime;
         }
 
@@ -140,6 +172,26 @@ public class Player : MonoBehaviour
         if (_controller.enabled)
             _controller.Move(_velocity * Time.deltaTime);
 
+    }
+
+    private void Roll(float horizontal)
+    {
+        AnimationStateManager.Instance.SetRollAnimation();
+        _canMove = false;
+        _isRolling = true;
+        _rollDirection = new Vector3(0, 0, horizontal);
+        if (_controller.isGrounded)
+            StartCoroutine(RollCompleteRoutine());
+    }
+
+    IEnumerator RollCompleteRoutine()
+    {
+        yield return new WaitForSeconds(0.7f);
+        if (_rollInput == 0)
+            _rollDirection /= 2;
+        yield return new WaitForSeconds(0.2f);
+        if (_rollInput == 0)
+            _rollDirection = Vector3.zero;
     }
 
     private void ClimbingLadder()
@@ -261,5 +313,11 @@ public class Player : MonoBehaviour
         _canMove = true;
         _gravity = _startingGravity;
     }
-    
+
+    public void RollComplete()
+    {
+        _isRolling = false;
+        _canMove = true;
+    }
+
 }
