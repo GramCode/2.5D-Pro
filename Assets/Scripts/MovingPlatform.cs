@@ -35,7 +35,6 @@ public class MovingPlatform : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Entered Trigger");
             other.transform.parent = transform;
         }
     }
@@ -44,7 +43,6 @@ public class MovingPlatform : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Exit Trigger");
             other.transform.parent = null;
         }
     }

@@ -162,8 +162,6 @@ public class Player : MonoBehaviour
         }
         else
         {
-            //Debug.Log("Moving Y Velocity: " + _yVelocity);
-
             _yVelocity -= _gravity * Time.deltaTime;
         }
 
