@@ -27,8 +27,11 @@ public class DeadZone : MonoBehaviour
 
             if (player != null)
             {
-                player.ResetVelocity();
+                player.ResetVelocityOnDead();
             }
+
+            
+
         }
     }
 

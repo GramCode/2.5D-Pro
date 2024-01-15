@@ -2,13 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LadderClimbFinishedBehavior : StateMachineBehaviour
+public class LandingBehavior : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        Player player = animator.transform.parent.GetComponent<Player>();
+
+        if (player != null)
+        {
+            player.CanMovePlayer(false);
+        }
+    }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -20,10 +25,10 @@ public class LadderClimbFinishedBehavior : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Player player = animator.transform.parent.GetComponent<Player>();
-        Debug.Log("Animation State Finished");
+
         if (player != null)
         {
-            player.ClimbingLadderComplete();
+            player.CanMovePlayer(true);
         }
     }
 

@@ -35,6 +35,10 @@ public class Player : MonoBehaviour
     private Vector3 _rollDirection;
     private float _rollInput;
     private Vector3 _rollVelocity;
+    private bool _falling = false;
+    private bool _dead = false;
+    private float _xVelocity;
+    private bool _canFall = false;
 
     private CharacterController _controller;
 
@@ -46,7 +50,10 @@ public class Player : MonoBehaviour
             Debug.LogError("The character controller in Player is NULL");
 
         _startingGravity = _gravity;
+
+        StartCoroutine(CanFallRoutine());
     }
+
 
     void Update()
     {
@@ -71,6 +78,9 @@ public class Player : MonoBehaviour
             ClimbingLadder();
         }
 
+        SnapToLedge();
+        ClimbUpLedge();
+
         if (_isRolling)
         {
             _rollInput = Input.GetAxisRaw("Horizontal");
@@ -80,16 +90,19 @@ public class Player : MonoBehaviour
             {
                 _yVelocity -= _gravity * Time.deltaTime;
                 _rollVelocity.y = _yVelocity;
+
+                if (_yVelocity < -7)
+                    AnimationStateManager.Instance.SetFallingAnimation();
             }
+            else
+            {
+                _yVelocity = 0;
+            }
+
             _controller.Move(_rollVelocity * Time.deltaTime);
             AnimationStateManager.Instance.SetSpeedState(_rollInput);
-
-            
         }
 
-        SnapToLedge();
-
-        ClimbUpLedge();
     }
     
     private void StartClimbingLadder()
@@ -159,10 +172,41 @@ public class Player : MonoBehaviour
                 _jumping = true;
                 AnimationStateManager.Instance.SetJumpState(_jumping);
             }
+
+            if (_falling && !_dead)
+            {
+                _falling = false;
+                AnimationStateManager.Instance.SetLandedAnimation();
+            }
+
+            if (_dead)
+            {
+                _falling = false;
+                _dead = false;
+                _yVelocity = 0;
+            }
+
+            _xVelocity = horizontal;
         }
         else
         {
+            if (_isRolling)
+                return;
+            
             _yVelocity -= _gravity * Time.deltaTime;
+            
+            if (_falling == false && _yVelocity < -6 && _jumping == false && _canFall)
+            {
+                AnimationStateManager.Instance.SetFallingAnimation();
+                _falling = true;
+            }
+            
+            if (_yVelocity < -15 && _canFall && _jumping)
+            {
+                AnimationStateManager.Instance.SetFallingAnimation();
+                AnimationStateManager.Instance.SetSpeedState(Mathf.Abs(_xVelocity));
+                _falling = true;
+            }                       
         }
 
         _velocity.y = _yVelocity;
@@ -222,6 +266,7 @@ public class Player : MonoBehaviour
         AnimationStateManager.Instance.SetLedgeAnimation(true);
         AnimationStateManager.Instance.SetSpeedState(0);
         AnimationStateManager.Instance.SetJumpState(false);
+        _canFall = false;
         _snapToLedge = true;
         _onLedge = true;
         _activeLedge = currentLedge;
@@ -259,6 +304,7 @@ public class Player : MonoBehaviour
     {
         transform.position = _activeLedge.StandUpPosition();
         AnimationStateManager.Instance.SetLedgeAnimation(false);
+        StartCoroutine(CanFallRoutine());
     }
 
     public void StandUpComplete()
@@ -266,9 +312,20 @@ public class Player : MonoBehaviour
         _controller.enabled = true;
     }
 
-    public void ResetVelocity()
+    public void ResetVelocityOnDead()
     {
         _yVelocity = 0;
+        _dead = true;
+        AnimationStateManager.Instance.SetIdleAnimFromDead();
+        _falling = false;
+        _canFall = false;
+        StartCoroutine(CanFallRoutine());
+    }
+
+    IEnumerator CanFallRoutine()
+    {
+        yield return new WaitForSeconds(1.2f);
+        _canFall = true;
     }
 
     public void AddCoin()
@@ -308,14 +365,40 @@ public class Player : MonoBehaviour
         AnimationStateManager.Instance.SetSpeedState(0);
         AnimationStateManager.Instance.SetClimbLadderAnimation(_climbingLadder);
         AnimationStateManager.Instance.SetClimbDirectionAnimation(0);
-        _canMove = true;
+        StartCoroutine(CanMovePlayerRoutine());
         _gravity = _startingGravity;
+    }
+
+    IEnumerator CanMovePlayerRoutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _canMove = true;
     }
 
     public void RollComplete()
     {
         _isRolling = false;
         _canMove = true;
+    }
+
+    public void GameComplete(GameObject confetti)
+    {
+        _controller.enabled = false;
+        AnimationStateManager.Instance.SetVictoryAnimation();
+        UIManager.Instance.DisplayGameCompleteText();
+        UIManager.Instance.DisplayInputText();
+        GameManager.Instance.GameOver();
+
+        if (_coins == 30)
+        {
+            UIManager.Instance.DisplayCoinsCollectedText();
+            confetti.SetActive(true);
+        }
+    }
+
+    public void CanMovePlayer(bool move)
+    {
+        _canMove = move;
     }
 
 }

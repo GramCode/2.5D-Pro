@@ -81,4 +81,26 @@ public class AnimationStateManager : MonoBehaviour
     {
         _anim.SetTrigger("Roll");
     }
+
+    public void SetVictoryAnimation()
+    {
+        _anim.SetTrigger("Victory");
+    }
+
+    public void SetFallingAnimation()
+    {
+        _anim.SetBool("Falling", true);
+    }
+
+    public void SetLandedAnimation()
+    {
+        _anim.SetTrigger("Landed");
+        _anim.SetBool("Falling", false);
+    }
+
+    public void SetIdleAnimFromDead()
+    {
+        _anim.SetTrigger("Dead");
+        _anim.SetBool("Falling", false);
+    }
 }
