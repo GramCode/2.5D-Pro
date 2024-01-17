@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
     private bool _dead = false;
     private float _xVelocity;
     private bool _canFall = false;
+    private bool _isGrounded = false;
 
     private CharacterController _controller;
 
@@ -57,6 +58,8 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        _isGrounded = _controller.isGrounded;
+
         if (_canClimbLadder && _jumping == false)
         {
             if (Input.GetKeyDown(KeyCode.E))
@@ -86,7 +89,7 @@ public class Player : MonoBehaviour
             _rollInput = Input.GetAxisRaw("Horizontal");
             _rollVelocity = _rollDirection * _rollDistance;
 
-            if (_controller.isGrounded == false)
+            if (_isGrounded == false)
             {
                 _yVelocity -= _gravity * Time.deltaTime;
                 _rollVelocity.y = _yVelocity;
@@ -113,6 +116,7 @@ public class Player : MonoBehaviour
         _canMove = false;
         StartCoroutine(WaitToClimbLadderRoutine());
         transform.position = _activeLadder.LadderSnapPosition();
+        UIManager.Instance.DisplayInteractionText(false);
     }
 
     IEnumerator WaitToClimbLadderRoutine()
@@ -125,7 +129,7 @@ public class Player : MonoBehaviour
 
     private void Move()
     {
-        if (_controller.isGrounded)
+        if (_isGrounded)
         {
             _yVelocity = 0;
 
@@ -171,12 +175,14 @@ public class Player : MonoBehaviour
                 _yVelocity = _jumpHeight;
                 _jumping = true;
                 AnimationStateManager.Instance.SetJumpState(_jumping);
+                SoundManager.Instance.PlaySound(SoundManager.Sounds.Jump);
             }
 
             if (_falling && !_dead)
             {
                 _falling = false;
                 AnimationStateManager.Instance.SetLandedAnimation();
+                SoundManager.Instance.PlaySound(SoundManager.Sounds.Land);
             }
 
             if (_dead)
@@ -222,7 +228,7 @@ public class Player : MonoBehaviour
         _canMove = false;
         _isRolling = true;
         _rollDirection = new Vector3(0, 0, horizontal);
-        if (_controller.isGrounded)
+        if (_isGrounded)
             StartCoroutine(RollCompleteRoutine());
     }
 
@@ -250,13 +256,14 @@ public class Player : MonoBehaviour
 
         _controller.Move(velocity * Time.deltaTime);
 
-        if (_controller.isGrounded)
+        if (_isGrounded)
         {
             AnimationStateManager.Instance.SetClimbLadderAnimation(false);
             _climbingLadder = false;
             _gravity = _startingGravity;
             AnimationStateManager.Instance.AnimationSpeed(1);
             _canMove = true;
+            UIManager.Instance.DisplayInteractionText(true);
         }
     }
 
@@ -270,6 +277,8 @@ public class Player : MonoBehaviour
         _snapToLedge = true;
         _onLedge = true;
         _activeLedge = currentLedge;
+        SoundManager.Instance.PlaySound(SoundManager.Sounds.Grab);
+        UIManager.Instance.DisplayInteractionText(true);
     }
 
     private void SnapToLedge()
@@ -289,12 +298,12 @@ public class Player : MonoBehaviour
     {
         if (_onLedge)
         {
-            float vertical = Input.GetAxis("Vertical");
-
-            if (vertical > 0)
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 AnimationStateManager.Instance.SetClimbAnimation();
                 _onLedge = false;
+                SoundManager.Instance.PlaySound(SoundManager.Sounds.Effort);
+                UIManager.Instance.DisplayInteractionText(false);
             }
 
         }
@@ -320,6 +329,7 @@ public class Player : MonoBehaviour
         _falling = false;
         _canFall = false;
         StartCoroutine(CanFallRoutine());
+        SoundManager.Instance.PlaySound(SoundManager.Sounds.Death);
     }
 
     IEnumerator CanFallRoutine()
@@ -332,6 +342,7 @@ public class Player : MonoBehaviour
     {
         _coins++;
         UIManager.Instance.UpdateCoinsText(_coins);
+        SoundManager.Instance.PlaySound(SoundManager.Sounds.Coin);
     }
 
     public void CanUpdateAnimationSpeed()
@@ -354,6 +365,7 @@ public class Player : MonoBehaviour
             _climbingLadderFinished = true;
             _activeLadderTopTrigger = ladderClimbFinished;
             _controller.enabled = false;
+            SoundManager.Instance.PlaySound(SoundManager.Sounds.Effort);
         }
 
     }
@@ -385,13 +397,13 @@ public class Player : MonoBehaviour
     {
         _controller.enabled = false;
         AnimationStateManager.Instance.SetVictoryAnimation();
-        UIManager.Instance.DisplayGameCompleteText();
-        UIManager.Instance.DisplayInputText();
+        UIManager.Instance.DisplayText(UIManager.CurrentText.GameCompleteText);
+        UIManager.Instance.DisplayText(UIManager.CurrentText.RestartText);
         GameManager.Instance.GameOver();
 
         if (_coins == 30)
         {
-            UIManager.Instance.DisplayCoinsCollectedText();
+            UIManager.Instance.DisplayText(UIManager.CurrentText.AllCoinsCollectedText);
             confetti.SetActive(true);
         }
     }
@@ -401,4 +413,8 @@ public class Player : MonoBehaviour
         _canMove = move;
     }
 
+    public bool IsClimbingLadder()
+    {
+        return _climbingLadder;
+    }
 }

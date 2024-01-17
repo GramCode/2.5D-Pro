@@ -20,7 +20,7 @@ public class LadderClimbFinishedBehavior : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Player player = animator.transform.parent.GetComponent<Player>();
-        Debug.Log("Animation State Finished");
+        
         if (player != null)
         {
             player.ClimbingLadderComplete();

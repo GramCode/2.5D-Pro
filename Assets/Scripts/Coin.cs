@@ -15,7 +15,7 @@ public class Coin : MonoBehaviour
                 player.AddCoin();
             }
 
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 }

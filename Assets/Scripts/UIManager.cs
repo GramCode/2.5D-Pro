@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    public enum CurrentText
+    {
+        GameCompleteText,
+        AllCoinsCollectedText,
+        RestartText,
+    }
+
     private static UIManager _instance;
     public static UIManager Instance
     {
@@ -17,7 +24,11 @@ public class UIManager : MonoBehaviour
     }
 
     [SerializeField]
-    private TMP_Text _coinsText, _gameCompleteText, _coinsCollected, _inputText;
+    private TMP_Text _coinsText;
+    [SerializeField]
+    private TMP_Text _interactionText;
+    [SerializeField]
+    private TMP_Text[] _textArray; // 0 = Game Complete Text, 1 = All Coins Collected Text, 2 = Restart Text
 
     private void Awake()
     {
@@ -27,24 +38,6 @@ public class UIManager : MonoBehaviour
     public void UpdateCoinsText(int count)
     {
         _coinsText.text = "x " + count;
-    }
-
-    public void DisplayGameCompleteText()
-    {
-        _gameCompleteText.gameObject.SetActive(true);
-        StartCoroutine(FlickerRoutine(_gameCompleteText.gameObject));
-    }
-
-    public void DisplayCoinsCollectedText()
-    {
-        _coinsCollected.gameObject.SetActive(true);
-        StartCoroutine(FlickerRoutine(_coinsCollected.gameObject));
-    }
-
-    public void DisplayInputText()
-    {
-        _inputText.gameObject.SetActive(true);
-        StartCoroutine(FlickerRoutine(_inputText.gameObject));
     }
 
     IEnumerator FlickerRoutine(GameObject obj)
@@ -57,5 +50,33 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(0.6f);
         }
         
+    }
+
+    public void DisplayText(CurrentText currentText)
+    {
+        GameObject text = null;
+
+        switch (currentText)
+        {
+            case CurrentText.GameCompleteText:
+                _textArray[0].gameObject.SetActive(true);
+                text = _textArray[0].gameObject;
+                break;
+            case CurrentText.AllCoinsCollectedText:
+                _textArray[1].gameObject.SetActive(true);
+                text = _textArray[1].gameObject;
+                break;
+            case CurrentText.RestartText:
+                _textArray[2].gameObject.SetActive(true);
+                text = _textArray[2].gameObject;
+                break;
+        }
+        
+        StartCoroutine(FlickerRoutine(text));
+    }
+
+    public void DisplayInteractionText(bool display)
+    {
+        _interactionText.gameObject.SetActive(display);
     }
 }

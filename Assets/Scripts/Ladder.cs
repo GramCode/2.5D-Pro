@@ -16,6 +16,9 @@ public class Ladder : MonoBehaviour
             if (player != null)
             {
                 player.ClimbLadder(true, this);
+
+                if (player.IsClimbingLadder() == false)
+                    UIManager.Instance.DisplayInteractionText(true);
             }
         }
     }
@@ -29,6 +32,7 @@ public class Ladder : MonoBehaviour
             if (player != null)
             {
                 player.ClimbLadder(false, this);
+                UIManager.Instance.DisplayInteractionText(false);
             }
         }
     }
