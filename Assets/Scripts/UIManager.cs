@@ -29,10 +29,30 @@ public class UIManager : MonoBehaviour
     private TMP_Text _interactionText;
     [SerializeField]
     private TMP_Text[] _textArray; // 0 = Game Complete Text, 1 = All Coins Collected Text, 2 = Restart Text
+    [SerializeField]
+    private GameObject _menu;
 
     private void Awake()
     {
         _instance = this;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            DisplayMenu(true);
+        }
+
+        if (Input.GetKeyUp(KeyCode.M))
+        {
+            DisplayMenu(false);
+        }
+    }
+
+    private void DisplayMenu(bool display)
+    {
+        _menu.SetActive(display);
     }
 
     public void UpdateCoinsText(int count)

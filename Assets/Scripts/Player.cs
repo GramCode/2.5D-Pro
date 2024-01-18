@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     private float _climbLadderSpeed = 2f;
     [SerializeField]
     private float _rollDistance = 8f;
+    [SerializeField]
+    private LayerMask _groundLayer;
 
     private Vector3 _velocity, _direction;
     private float _yVelocity;
@@ -39,6 +41,8 @@ public class Player : MonoBehaviour
     private float _xVelocity;
     private bool _canFall = false;
     private bool _isGrounded = false;
+    private float _ladderGroundedRate = 0.5f;
+    private float _ladderGroundedTime = -1;
 
     private CharacterController _controller;
 
@@ -58,7 +62,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         _isGrounded = _controller.isGrounded;
-
+        
         if (_canClimbLadder && _jumping == false)
         {
             if (Input.GetKeyDown(KeyCode.E))
@@ -116,6 +120,7 @@ public class Player : MonoBehaviour
         StartCoroutine(WaitToClimbLadderRoutine());
         transform.position = _activeLadder.LadderSnapPosition();
         UIManager.Instance.DisplayInteractionText(false);
+        _ladderGroundedTime = Time.time + _ladderGroundedRate;
     }
 
     IEnumerator WaitToClimbLadderRoutine()
@@ -255,7 +260,7 @@ public class Player : MonoBehaviour
 
         _controller.Move(velocity * Time.deltaTime);
 
-        if (_isGrounded)
+        if (_isGrounded && Time.time > _ladderGroundedTime)
         {
             AnimationStateManager.Instance.SetClimbLadderAnimation(false);
             _climbingLadder = false;
@@ -418,4 +423,5 @@ public class Player : MonoBehaviour
     {
         return _climbingLadder;
     }
+
 }
