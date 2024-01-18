@@ -12,6 +12,7 @@ public class SoundManager : MonoBehaviour
         Land,
         Effort,
         Grab,
+        Win
     }
 
     public enum FootSounds
@@ -40,7 +41,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     private AudioSource _coinsAudioSource;
     [SerializeField]
-    private AudioClip[] _clips; //0 = Death, 1 = Jump, 2 = Land a jump, 3 = effort, 4 = grab, 5 = Righ Footstep, 6 = Left Footstep, 7 = Climbing Ladder
+    private AudioClip[] _clips; //0 = Death, 1 = Jump, 2 = Land a jump, 3 = effort, 4 = grab, 5 = Righ Footstep, 6 = Left Footstep, 7 = Climbing Ladder, 8 = Win
 
     private void Awake()
     {
@@ -69,7 +70,9 @@ public class SoundManager : MonoBehaviour
             case Sounds.Grab:
                 _audioSource.clip = _clips[4];
                 break;
-            
+            case Sounds.Win:
+                _audioSource.clip = _clips[8];
+                break;
             default:
                 break;
         }

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class Player : MonoBehaviour
 {
@@ -406,6 +405,8 @@ public class Player : MonoBehaviour
             UIManager.Instance.DisplayText(UIManager.CurrentText.AllCoinsCollectedText);
             confetti.SetActive(true);
         }
+
+        SoundManager.Instance.PlaySound(SoundManager.Sounds.Win);
     }
 
     public void CanMovePlayer(bool move)
