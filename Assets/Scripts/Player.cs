@@ -14,8 +14,6 @@ public class Player : MonoBehaviour
     private float _climbLadderSpeed = 2f;
     [SerializeField]
     private float _rollDistance = 8f;
-    [SerializeField]
-    private LayerMask _groundLayer;
 
     private Vector3 _velocity, _direction;
     private float _yVelocity;
@@ -43,6 +41,8 @@ public class Player : MonoBehaviour
     private bool _isGrounded = false;
     private float _ladderGroundedRate = 0.5f;
     private float _ladderGroundedTime = -1;
+    private float _jumpRate = 0.5f;
+    private float _jumpTime = -1;
 
     private CharacterController _controller;
 
@@ -58,11 +58,13 @@ public class Player : MonoBehaviour
         StartCoroutine(CanFallRoutine());
     }
 
-
-    void Update()
+    private void FixedUpdate()
     {
         _isGrounded = _controller.isGrounded;
-        
+    }
+
+    private void Update()
+    {
         if (_canClimbLadder && _jumping == false)
         {
             if (Input.GetKeyDown(KeyCode.E))
@@ -135,12 +137,10 @@ public class Player : MonoBehaviour
     {
         if (_isGrounded)
         {
-            _yVelocity = 0;
-
             AnimationStateManager.Instance.SetLadderClimbFinishedAnimation(false);
             _climbingLadderFinished = false;
 
-            if (_jumping)
+            if (_jumping && Time.time > _jumpTime)
             {
                 _jumping = false;
                 AnimationStateManager.Instance.SetJumpState(_jumping);
@@ -176,6 +176,7 @@ public class Player : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                _jumpTime = Time.time + _jumpRate;
                 _yVelocity = _jumpHeight;
                 _jumping = true;
                 AnimationStateManager.Instance.SetJumpState(_jumping);
@@ -204,7 +205,7 @@ public class Player : MonoBehaviour
                 return;
             
             _yVelocity -= _gravity * Time.deltaTime;
-            
+            Debug.Log("Gravity: " + _yVelocity);
             if (_falling == false && _yVelocity < -6 && _jumping == false && _canFall)
             {
                 AnimationStateManager.Instance.SetFallingAnimation();
